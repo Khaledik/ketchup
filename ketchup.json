@@ -1,0 +1,120 @@
+{
+  "module": {
+    "numero": 1,
+    "nom": "Ketchup",
+    "questions": 10
+   
+  },
+  "questions": [
+    {
+      "numero": 1,
+      "question": "Quelle est l'ingrédient de base du ketchup traditionnel ? ",
+      "reponses": [
+        "Tomates",
+        "Vinaigre",
+        "Sucre",
+        "Epices"
+      ],
+      "reponse_correcte": 1
+    },
+    {
+      "numero": 2,
+      "question": "En quelle année le ketchup a-t-il été introduit pour la première fois aux États-Unis ? ",
+      "reponses": [
+        "1690",
+        "1801",
+        "1876",
+        "1903"
+      ],
+      "reponse_correcte": 3
+    },
+    {
+      "numero": 3,
+      "question": "Quel pays est généralement crédité de l'invention du ketchup tel que nous le connaissons aujourd'hui ? ",
+      "reponses": [
+        "Chine",
+        "Angleterre",
+        "Etats-Unis",
+        "Malaisie"
+      ],
+      "reponse_correcte": 1
+    },
+    {
+      "numero": 4,
+      "question": "Quelle entreprise alimentaire est connue pour son ketchup emblématique et son logo en forme de 57 ? ",
+      "reponses": [
+        "Heinz",
+        "Hunt's",
+        "Del Monte",
+        "French's"
+      ],
+      "reponse_correcte": 1
+    },
+    {
+      "numero": 5,
+      "question": "Quelle variante de ketchup est souvent utilisée comme ingrédient principal dans la cuisine asiatique ? ",
+      "reponses": [
+        "Ketchup aux fruits",
+        "Ketchup aux tomates vertes",
+        "Ketchup au curry",
+        "Ketchup épicé"
+      ],
+      "reponse_correcte": 4
+    },
+    {
+      "numero": 6,
+      "question": "Quel est le pourcentage approximatif de sucre contenu dans une portion standard de ketchup ? ",
+      "reponses": [
+        "10 %",
+        "20 %",
+        "30 %",
+        "40 %"
+      ],
+      "reponse_correcte": 2
+    },
+    {
+      "numero": 7,
+      "question": "Quel est l'ingrédient secret souvent ajouté au ketchup pour ajouter une saveur umami ? ",
+      "reponses": [
+        "Sauce soja",
+        "Poisson fermenté",
+        "Champignons",
+        "Extrait d'algues"
+      ],
+      "reponse_correcte": 2
+    },
+    {
+      "numero": 8,
+      "question": "Dans quel pays le Ketchup est-il considéré comme un légume dans les cantines ? ",
+      "reponses": [
+        "Allemagne",
+        "Brésil",
+        "Amérique",
+        "Norvège"
+      ],
+      "reponse_correcte": 1
+    },
+    {
+      "numero": 9,
+      "question": "Dans quelle décennie le ketchup a-t-il commencé à être vendu en bouteilles en verre plutôt qu'en sachets ? ",
+      "reponses": [
+        "1880's",
+        "1920's",
+        "1950's",
+        "1970's"
+      ],
+      "reponse_correcte": 2
+    },
+    {
+      "numero": 10,
+      "question": "Dans quel film culte le ketchup a été utilisé pour remplacer le sang ? ",
+      "reponses": [
+        "Massacre a la tronçoneuse",
+        "Psychose",
+        "Old boy",
+        "Shining"
+      ],
+      "reponse_correcte": 1
+    }
+  ]
+}

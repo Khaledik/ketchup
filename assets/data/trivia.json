@@ -1,0 +1,70 @@
+{
+  "questions": [
+    {
+      "question": "Quelle est l'ingrédient de base du ketchup traditionnel ? ",
+      "answers": ["Tomates", "Vinaigre", "Sucre", "Epices"],
+      "correct_anwser": 1
+    },
+    {
+      "question": "En quelle année le ketchup a-t-il été introduit pour la première fois aux États-Unis ? ",
+      "answers": ["1690", "1801", "1876", "1903"],
+      "correct_anwser": 3
+    },
+    {
+      "question": "Quel pays est généralement crédité de l'invention du ketchup tel que nous le connaissons aujourd'hui ? ",
+      "answers": ["Chine", "Angleterre", "Etats-Unis", "Malaisie"],
+      "correct_anwser": 1
+    },
+    {
+      "question": "Quelle entreprise alimentaire est connue pour son ketchup emblématique et son logo en forme de 57 ? ",
+      "answers": ["Heinz", "Hunt's", "Del Monte", "French's"],
+      "correct_anwser": 1
+    },
+    {
+      "question": "Quelle variante de ketchup est souvent utilisée comme ingrédient principal dans la cuisine asiatique ? ",
+      "answers": [
+        "Ketchup aux fruits",
+        "Ketchup aux tomates vertes",
+        "Ketchup au curry",
+        "Ketchup épicé"
+      ],
+      "correct_anwser": 4
+    },
+    {
+      "question": "Quel est le pourcentage approximatif de sucre contenu dans une portion standard de ketchup ? ",
+      "answers": ["10 %", "20 %", "30 %", "40 %"],
+      "correct_anwser": 2
+    },
+    {
+      "numero": 7,
+      "question": "Quel est l'ingrédient secret souvent ajouté au ketchup pour ajouter une saveur umami ? ",
+      "answers": [
+        "Sauce soja",
+        "Poisson fermenté",
+        "Champignons",
+        "Extrait d'algues"
+      ],
+      "correct_anwser": 2
+    },
+    {
+      "question": "Dans quel pays le Ketchup est-il considéré comme un légume dans les cantines ? ",
+      "answers": ["Allemagne", "Brésil", "Amérique", "Norvège"],
+      "correct_anwser": 1
+    },
+    {
+      "question": "Dans quelle décennie le ketchup a-t-il commencé à être vendu en bouteilles en verre plutôt qu'en sachets ? ",
+      "answers": ["1880's", "1920's", "1950's", "1970's"],
+      "correct_anwser": 2
+    },
+    {
+      "question": "Dans quel film culte le ketchup a été utilisé pour remplacer le sang ? ",
+      "answers": [
+        "Massacre a la tronçoneuse",
+        "Psychose",
+        "Old boy",
+        "Shining"
+      ],
+      "correct_anwser": 1
+    }
+  ]
+}

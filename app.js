@@ -15,12 +15,30 @@ document.addEventListener("DOMContentLoaded", () => {
     "text-xl",
     "shadow-inner",
     "shadow-white",
+    "border-t-2",
+    "border-x-2",
     "border-b-4",
     "border-yellow-600",
     "w-full"
   );
   nextQuestionBtn.style.display = "none";
-  nextQuestionBtn.addEventListener("click", nextQuestion);
+  nextQuestionBtn.addEventListener("click", () => {
+    nextQuestion();
+    const myConfetti = confetti.create(conffetiCanvas, {
+      resize: true,
+      useWorker: true,
+    });
+    myConfetti({
+      particleCount: 100,
+      startVelocity: 30,
+      spread: 360,
+      origin: {
+        x: Math.random(),
+        // since they fall down, start a bit higher than random
+        y: Math.random() - 0.2,
+      },
+    });
+  });
   const previousQuestionBtn = document.createElement("button");
   previousQuestionBtn.textContent = "Question précédente";
   previousQuestionBtn.classList.add(
@@ -33,6 +51,8 @@ document.addEventListener("DOMContentLoaded", () => {
     "text-xl",
     "shadow-inner",
     "shadow-white",
+    "border-t-2",
+    "border-x-2",
     "border-b-4",
     "border-yellow-600",
     "w-full"
@@ -48,20 +68,34 @@ document.addEventListener("DOMContentLoaded", () => {
     "items-center",
     "p-4",
     "rounded-xl",
-    "border-4",
+    "border-t-4",
+    "border-x-4",
+    "border-b-8",
     "border-black"
   );
+  const conffetiCanvas = document.createElement("canvas");
+  conffetiCanvas.classList.add(
+    "absolute",
+    "top-0",
+    "left-0",
+    "w-full",
+    "h-full",
+    "-z-10"
+  );
+  document.body.appendChild(conffetiCanvas);
 
   let currentQuestionIndex = 0;
 
   function startGame() {
-    startMusic("assets/mp3/countdown.mp3");
+    // startMusic("assets/mp3/countdown.mp3");
     startGameBtn.style.display = "none";
     nextQuestionBtn.style.display = "block";
     previousQuestionBtn.style.display = "block";
     board.style.display = "flex";
     showQuestion();
   }
+
+  const userAnswers = []; // Récupérer les réponses de l'utilisateur
 
   function showQuestion() {
     // Récupérer les données du JSON
@@ -90,18 +124,54 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const answerContainer = document.createElement("div");
         answerContainer.setAttribute("id", "answer-container");
-        answerContainer.classList.add("flex", "items-center", "gap-4");
+        answerContainer.classList.add("grid", "grid-cols-2", "gap-4", "w-full");
 
-        question.answers.forEach((answer) => {
+        const answerButtons = [];
+
+        question.answers.forEach((answer, index) => {
           const answerBtn = document.createElement("button");
           answerBtn.classList.add(
-            "bg-black",
-            "text-white",
-            "py-2",
-            "px-4",
-            "rounded-lg"
+            "bg-gray-200",
+            "border-t-2",
+            "border-x-2",
+            "border-b-4",
+            "border-black",
+            "text-black",
+            "text-lg",
+            "size-24",
+            "rounded-lg",
+            "w-full",
+            "font-medium"
           );
           answerBtn.innerHTML = answer;
+
+          answerButtons.push(answerBtn);
+
+          answerBtn.addEventListener("click", () => {
+            answerButtons.forEach((btn, idx) => {
+              if (idx !== index) {
+                btn.disabled = true;
+              }
+            });
+
+            if (index + 1 === question.correct_answer) {
+              answerBtn.classList.add("bg-green-500");
+              // startMusic("assets/mp3/correct.mp3");
+            } else {
+              answerBtn.classList.add("bg-red-500");
+              // startMusic("assets/mp3/wrong.mp3");
+            }
+            userAnswers[currentQuestionIndex] = index + 1;
+          });
+
+          if (userAnswers[currentQuestionIndex] === index + 1) {
+            if (index + 1 === question.correct_answer) {
+              answerBtn.classList.add("bg-green-500");
+            } else {
+              answerBtn.classList.add("bg-red-500");
+            }
+          }
+
           answerContainer.appendChild(answerBtn);
         });
 
@@ -124,7 +194,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (currentQuestionIndex < 5) {
       showQuestion();
     } else {
-      board.innerHTML = "Vous avez fini les questions";
+      currentQuestionIndex = 0;
+      showQuestion();
     }
   }
 
@@ -132,6 +203,9 @@ document.addEventListener("DOMContentLoaded", () => {
     currentQuestionIndex--;
     board.innerHTML = "";
     if (currentQuestionIndex >= 0) {
+      showQuestion();
+    } else {
+      currentQuestionIndex = 0;
       showQuestion();
     }
   }

@@ -20,7 +20,23 @@ document.addEventListener("DOMContentLoaded", () => {
     "w-full"
   );
   nextQuestionBtn.style.display = "none";
-  nextQuestionBtn.addEventListener("click", nextQuestion);
+  nextQuestionBtn.addEventListener("click", () => {
+    nextQuestion();
+    const myConfetti = confetti.create(conffetiCanvas, {
+      resize: true,
+      useWorker: true,
+    });
+    myConfetti({
+      particleCount: 100,
+      startVelocity: 30,
+      spread: 360,
+      origin: {
+        x: Math.random(),
+        // since they fall down, start a bit higher than random
+        y: Math.random() - 0.2,
+      },
+    });
+  });
   const previousQuestionBtn = document.createElement("button");
   previousQuestionBtn.textContent = "Question précédente";
   previousQuestionBtn.classList.add(
@@ -51,6 +67,16 @@ document.addEventListener("DOMContentLoaded", () => {
     "border-4",
     "border-black"
   );
+  const conffetiCanvas = document.createElement("canvas");
+  conffetiCanvas.classList.add(
+    "absolute",
+    "top-0",
+    "left-0",
+    "w-full",
+    "h-full",
+    "-z-10"
+  );
+  document.body.appendChild(conffetiCanvas);
 
   let currentQuestionIndex = 0;
 
@@ -62,6 +88,8 @@ document.addEventListener("DOMContentLoaded", () => {
     board.style.display = "flex";
     showQuestion();
   }
+
+  const userAnswers = []; // Récupérer les réponses de l'utilisateur
 
   function showQuestion() {
     // Récupérer les données du JSON
@@ -92,7 +120,9 @@ document.addEventListener("DOMContentLoaded", () => {
         answerContainer.setAttribute("id", "answer-container");
         answerContainer.classList.add("flex", "items-center", "gap-4");
 
-        question.answers.forEach((answer) => {
+        const answerButtons = [];
+
+        question.answers.forEach((answer, index) => {
           const answerBtn = document.createElement("button");
           answerBtn.classList.add(
             "bg-black",
@@ -102,6 +132,23 @@ document.addEventListener("DOMContentLoaded", () => {
             "rounded-lg"
           );
           answerBtn.innerHTML = answer;
+          answerBtn.addEventListener("click", () => {
+            if (index + 1 === question.correct_answer) {
+              answerBtn.classList.add("bg-green-500");
+              startMusic("assets/mp3/correct.mp3");
+            } else {
+              answerBtn.classList.add("bg-red-500");
+              startMusic("assets/mp3/wrong.mp3");
+            }
+            answerButtons.push(answerBtn);
+            userAnswers[currentQuestionIndex] = index + 1;
+          });
+
+          if (userAnswers[currentQuestionIndex] === index + 1) {
+            answerBtn.classList.add("bg-yellow-500");
+            answerBtn.disabled = true;
+          }
+
           answerContainer.appendChild(answerBtn);
         });
 
@@ -132,6 +179,9 @@ document.addEventListener("DOMContentLoaded", () => {
     currentQuestionIndex--;
     board.innerHTML = "";
     if (currentQuestionIndex >= 0) {
+      showQuestion();
+    } else {
+      currentQuestionIndex = 0;
       showQuestion();
     }
   }

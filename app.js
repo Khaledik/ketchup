@@ -15,6 +15,8 @@ document.addEventListener("DOMContentLoaded", () => {
     "text-xl",
     "shadow-inner",
     "shadow-white",
+    "border-t-2",
+    "border-x-2",
     "border-b-4",
     "border-yellow-600",
     "w-full"
@@ -49,6 +51,8 @@ document.addEventListener("DOMContentLoaded", () => {
     "text-xl",
     "shadow-inner",
     "shadow-white",
+    "border-t-2",
+    "border-x-2",
     "border-b-4",
     "border-yellow-600",
     "w-full"
@@ -64,7 +68,9 @@ document.addEventListener("DOMContentLoaded", () => {
     "items-center",
     "p-4",
     "rounded-xl",
-    "border-4",
+    "border-t-4",
+    "border-x-4",
+    "border-b-8",
     "border-black"
   );
   const conffetiCanvas = document.createElement("canvas");
@@ -81,7 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentQuestionIndex = 0;
 
   function startGame() {
-    startMusic("assets/mp3/countdown.mp3");
+    // startMusic("assets/mp3/countdown.mp3");
     startGameBtn.style.display = "none";
     nextQuestionBtn.style.display = "block";
     previousQuestionBtn.style.display = "block";
@@ -118,35 +124,52 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const answerContainer = document.createElement("div");
         answerContainer.setAttribute("id", "answer-container");
-        answerContainer.classList.add("flex", "items-center", "gap-4");
+        answerContainer.classList.add("grid", "grid-cols-2", "gap-4", "w-full");
 
         const answerButtons = [];
 
         question.answers.forEach((answer, index) => {
           const answerBtn = document.createElement("button");
           answerBtn.classList.add(
-            "bg-black",
-            "text-white",
-            "py-2",
-            "px-4",
-            "rounded-lg"
+            "bg-gray-200",
+            "border-t-2",
+            "border-x-2",
+            "border-b-4",
+            "border-black",
+            "text-black",
+            "text-lg",
+            "size-24",
+            "rounded-lg",
+            "w-full",
+            "font-medium"
           );
           answerBtn.innerHTML = answer;
+
+          answerButtons.push(answerBtn);
+
           answerBtn.addEventListener("click", () => {
+            answerButtons.forEach((btn, idx) => {
+              if (idx !== index) {
+                btn.disabled = true;
+              }
+            });
+
             if (index + 1 === question.correct_answer) {
               answerBtn.classList.add("bg-green-500");
-              startMusic("assets/mp3/correct.mp3");
+              // startMusic("assets/mp3/correct.mp3");
             } else {
               answerBtn.classList.add("bg-red-500");
-              startMusic("assets/mp3/wrong.mp3");
+              // startMusic("assets/mp3/wrong.mp3");
             }
-            answerButtons.push(answerBtn);
             userAnswers[currentQuestionIndex] = index + 1;
           });
 
           if (userAnswers[currentQuestionIndex] === index + 1) {
-            answerBtn.classList.add("bg-yellow-500");
-            answerBtn.disabled = true;
+            if (index + 1 === question.correct_answer) {
+              answerBtn.classList.add("bg-green-500");
+            } else {
+              answerBtn.classList.add("bg-red-500");
+            }
           }
 
           answerContainer.appendChild(answerBtn);
@@ -171,7 +194,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (currentQuestionIndex < 5) {
       showQuestion();
     } else {
-      board.innerHTML = "Vous avez fini les questions";
+      currentQuestionIndex = 0;
+      showQuestion();
     }
   }
 

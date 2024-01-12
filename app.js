@@ -5,11 +5,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // Variables globales
   let chrono = 0;
   let score = 0;
-  let selectionedAnswer = false;
-  // let textValideBtn = "Valider Quiz";
+  let selectionedAnswer = false; //le boolean qui permet d'avoir le popup quand aucune reponse n'est selectioné
   const startGameBtn = document.getElementById("start-game");
   const nextQuestionBtn = createButton("Question suivante", () => {
-    if (currentQuestionIndex === 9 && selectionedAnswer === true) {
+    if (currentQuestionIndex === 9 && selectionedAnswer === true) { // permet d'aller sur le scoreBoard à la fin des questions
       validateQuiz();
     } else {
       nextQuestion();
@@ -61,6 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   //Chronometre
   const chronoBorder = document.createElement("div");
+  chronoBorder.style.display = "none";
   chronoBorder.classList.add(
     "absolute",
     "top-4",
@@ -68,10 +68,11 @@ document.addEventListener("DOMContentLoaded", () => {
     "bg-black/40",
     "p-1.5",
     "rounded-2xl"
-  )
+  );
   document.body.appendChild(chronoBorder);
 
   const chronoContainer = document.createElement("div");
+  chronoContainer.style.display = "none";
   chronoContainer.classList.add(
     "bg-yellow-400",
     "px-4",
@@ -82,14 +83,14 @@ document.addEventListener("DOMContentLoaded", () => {
     "shadow-white",
     "border-b-4",
     "border-yellow-600"
-  )
+  );
   chronoBorder.appendChild(chronoContainer);
 
   const chronoText = document.createElement("p");
   chronoText.classList.add(
     "font-bold",
     "text-xl"
-  )
+  );
   chronoContainer.appendChild(chronoText);
 
 
@@ -103,8 +104,10 @@ document.addEventListener("DOMContentLoaded", () => {
     nextQuestionBtn.style.display = "block";
     previousQuestionBtn.style.display = "block";
     board.style.display = "flex";
+    chronoBorder.style.display = "block";
+    chronoContainer.style.display = "block";
     showQuestion();
-    temps();
+    setInterval(temps, 1000); //lance le chrono
   }
 
   const userAnswers = []; // Récupérer les réponses de l'utilisateur
@@ -131,11 +134,12 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
 
+        //les numeros des questions
         const questionNumber = document.createElement("h1");
         questionNumber.innerHTML = `Question ${currentQuestionIndex + 1} / ${data.questions.length}`
         questionNumber.classList.add("text-lg", "font-bold")
 
-
+        //les images
         const ketchupImgs = document.createElement("div");
         ketchupImgs.style.backgroundImage = `url(assets/images/ketchup-quiz-img-${currentQuestionIndex + 1}.jpg)`;
         ketchupImgs.classList.add(
@@ -231,7 +235,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function nextQuestion() {
     if (!selectionedAnswer) {
-      popUpFunction();
+      popUpFunction(); 
       return;
     }
     currentQuestionIndex++;
@@ -252,6 +256,8 @@ document.addEventListener("DOMContentLoaded", () => {
     } 
   }
 
+
+  //function pour afficher le message quand aucune question n'a été selectioné
   function popUpFunction() {
     const popUpBg = document.createElement("div");
     popUpBg.classList.add(
@@ -316,6 +322,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 
+  //la function ou il y aura le score board
   function validateQuiz() {
     alert(`Vous avez ${score} reponses`)
   }
@@ -340,6 +347,8 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.appendChild(svgPattern);
   }
 
+
+  //fonction pour le chronometre
   function temps() {
     let minuteDecompte = parseInt(chrono / 60, 10)
     let secondeDecompte = parseInt(chrono % 60, 10);
@@ -349,7 +358,7 @@ document.addEventListener("DOMContentLoaded", () => {
     //temp = temp <= 0 ? 0 : temp - 1;
     chrono = chrono + 1;
   }
-  setInterval(temps, 1000);
+ 
 
 
   gameUI();

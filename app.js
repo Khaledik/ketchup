@@ -3,10 +3,16 @@ import { createButton } from "./ui.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   // Variables globales
+  let score = 0;
   let selectionedAnswer = false;
+  let textValideBtn = "Valider Quiz";
   const startGameBtn = document.getElementById("start-game");
   const nextQuestionBtn = createButton("Question suivante", () => {
-    nextQuestion();
+    if (currentQuestionIndex === 9 && selectionedAnswer === true) {
+        validateQuiz();
+    } else {
+      nextQuestion();
+    }
     const myConfetti = confetti.create(conffetiCanvas, {
       resize: true,
       useWorker: true,
@@ -127,6 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             if (index + 1 === question.correct_answer) {
+              score ++;
               answerBtn.classList.add("bg-green-500");
               startMusic("assets/mp3/correct.mp3");
             } else {
@@ -194,6 +201,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  function validateQuiz() {
+    
+      alert(`Vous avez ${score} reponses`)
+    
+    
+   
+  }
+
   function gameUI() {
     const logo = document.createElement("img");
     logo.src = "assets/images/logo.png";
@@ -214,6 +229,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   gameUI();
-
+  console.log(selectionedAnswer)
   startGameBtn.addEventListener("click", startGame);
 });

@@ -3,6 +3,7 @@ import { createButton } from "./ui.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   // Variables globales
+  let selectionedAnswer = false;
   const startGameBtn = document.getElementById("start-game");
   const nextQuestionBtn = createButton("Question suivante", () => {
     nextQuestion();
@@ -83,7 +84,11 @@ document.addEventListener("DOMContentLoaded", () => {
           "items-center"
         );
 
-        const questionTitle = document.createElement("h1");
+        const questionNumber = document.createElement("h1");
+        questionNumber.innerHTML = `Question ${currentQuestionIndex + 1} / ${data.questions.length}`
+        questionNumber.classList.add("text-lg", "font-bold")
+
+        const questionTitle = document.createElement("h2");
 
         questionTitle.innerHTML = question.question;
         questionTitle.classList.add("text-lg", "font-bold");
@@ -114,6 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
           answerButtons.push(answerBtn);
 
           answerBtn.addEventListener("click", () => {
+            selectionedAnswer = true;
             answerButtons.forEach((btn, idx) => {
               if (idx !== index) {
                 btn.disabled = true;
@@ -140,11 +146,13 @@ document.addEventListener("DOMContentLoaded", () => {
             } else {
               answerBtn.disabled = true;
             }
+            selectionedAnswer = true;
           }
 
           answerContainer.appendChild(answerBtn);
         });
 
+        questionContainer.appendChild(questionNumber);
         questionContainer.appendChild(questionTitle);
         questionContainer.appendChild(answerContainer);
 
@@ -159,6 +167,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function nextQuestion() {
+    if (!selectionedAnswer) {
+      alert("Sélectionner une réponse avant de passer à la question suivante.");
+      return; 
+    }
     currentQuestionIndex++;
     board.innerHTML = "";
     if (currentQuestionIndex < 10) {
@@ -167,9 +179,11 @@ document.addEventListener("DOMContentLoaded", () => {
       currentQuestionIndex = 0;
       showQuestion();
     }
+    selectionedAnswer = false;
   }
 
   function previousQuestion() {
+    selectionedAnswer = true;
     currentQuestionIndex--;
     board.innerHTML = "";
     if (currentQuestionIndex >= 0) {

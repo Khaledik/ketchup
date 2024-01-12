@@ -3,13 +3,14 @@ import { createButton } from "./ui.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   // Variables globales
+  let chrono = 0;
   let score = 0;
   let selectionedAnswer = false;
-  let textValideBtn = "Valider Quiz";
+  // let textValideBtn = "Valider Quiz";
   const startGameBtn = document.getElementById("start-game");
   const nextQuestionBtn = createButton("Question suivante", () => {
     if (currentQuestionIndex === 9 && selectionedAnswer === true) {
-        validateQuiz();
+      validateQuiz();
     } else {
       nextQuestion();
     }
@@ -57,20 +58,59 @@ document.addEventListener("DOMContentLoaded", () => {
   );
   document.body.appendChild(conffetiCanvas);
 
+
+  //Chronometre
+  const chronoBorder = document.createElement("div");
+  chronoBorder.classList.add(
+    "absolute",
+    "top-4",
+    "right-4",
+    "bg-black/40",
+    "p-1.5",
+    "rounded-2xl"
+  )
+  document.body.appendChild(chronoBorder);
+
+  const chronoContainer = document.createElement("div");
+  chronoContainer.classList.add(
+    "bg-yellow-400",
+    "px-4",
+    "py-3",
+    "rounded-xl",
+    "text-xl",
+    "shadow-inner",
+    "shadow-white",
+    "border-b-4",
+    "border-yellow-600"
+  )
+  chronoBorder.appendChild(chronoContainer);
+
+  const chronoText = document.createElement("p");
+  chronoText.classList.add(
+    "font-bold",
+    "text-xl"
+  )
+  chronoContainer.appendChild(chronoText);
+
+
+
   let currentQuestionIndex = 0;
 
   function startGame() {
+
     // startMusic("assets/mp3/countdown.mp3");
     startGameBtn.style.display = "none";
     nextQuestionBtn.style.display = "block";
     previousQuestionBtn.style.display = "block";
     board.style.display = "flex";
     showQuestion();
+    temps();
   }
 
   const userAnswers = []; // Récupérer les réponses de l'utilisateur
 
   function showQuestion() {
+   
     // Récupérer les données du JSON
     fetch("assets/data/trivia.json")
       .then((response) => {
@@ -90,6 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
           "items-center"
         );
 
+
         const questionNumber = document.createElement("h1");
         questionNumber.innerHTML = `Question ${currentQuestionIndex + 1} / ${data.questions.length}`
         questionNumber.classList.add("text-lg", "font-bold")
@@ -108,9 +149,8 @@ document.addEventListener("DOMContentLoaded", () => {
           "border-b-4",
           "border-black"
         )
-        
-        const questionTitle = document.createElement("h2");
 
+        const questionTitle = document.createElement("h2");
         questionTitle.innerHTML = question.question;
         questionTitle.classList.add("text-lg", "font-bold");
 
@@ -148,7 +188,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             if (index + 1 === question.correct_answer) {
-              score ++;
+              score++;
               answerBtn.classList.add("bg-green-500");
               startMusic("assets/mp3/correct.mp3");
             } else {
@@ -198,10 +238,7 @@ document.addEventListener("DOMContentLoaded", () => {
     board.innerHTML = "";
     if (currentQuestionIndex < 10) {
       showQuestion();
-    } else {
-      currentQuestionIndex = 0;
-      showQuestion();
-    }
+    } 
     selectionedAnswer = false;
   }
 
@@ -212,78 +249,75 @@ document.addEventListener("DOMContentLoaded", () => {
     board.innerHTML = "";
     if (currentQuestionIndex >= 0) {
       showQuestion();
-    } else {
-      currentQuestionIndex = 0;
-      showQuestion();
-    }
+    } 
   }
 
   function popUpFunction() {
     const popUpBg = document.createElement("div");
-      popUpBg.classList.add (
-        "h-full",
-        "w-full",
-        "absolute",
-        "bg-black/40",
-        "flex",
-        "justify-center",
-        "items-center"
-      )
+    popUpBg.classList.add(
+      "h-screen",
+      "w-full",
+      "absolute",
+      "bg-black/40",
+      "flex",
+      "justify-center",
+      "items-center"
+    )
     document.body.appendChild(popUpBg)
 
-        const popUp = document.createElement("div");
-        popUp.innerText = "Sélectionnez une réponse"
-        popUp.classList.add (
-          "px-16",
-          "py-12",
-          "bg-white",
-          "border-t-2",
-            "border-x-2",
-            "border-b-4",
-            "border-black",
-            "text-black",
-            "text-lg",
-            "rounded-lg",
-            "absolute",
-            "flex",
-            "flex-col",
-            "items-center",
-            "justify-center",
-            "gap-4",
-            "font-bold"
-        );
-        popUpBg.appendChild(popUp);
-      
-        const popUpBtn = document.createElement("button");
-        popUpBtn.innerText = "Ok";
-        popUpBtn.classList.add(
-          "bg-yellow-400",
-          "hover:bg-yellow-500",
-          "px-12",
-          "py-3",
-          "rounded-xl",
-          "font-medium",
-          "text-xl",
-          "shadow-inner",
-          "shadow-white",
-          "border-t-2",
-          "border-x-2",
-          "border-b-4",
-          "border-yellow-600",
-          "w-full"
-        )
+    const popUp = document.createElement("div");
+    popUp.innerText = "Sélectionnez une réponse"
+    popUp.classList.add(
+      "px-16",
+      "py-12",
+      "bg-white",
+      "border-t-2",
+      "border-x-2",
+      "border-b-4",
+      "border-black",
+      "text-black",
+      "text-lg",
+      "rounded-lg",
+      "absolute",
+      "flex",
+      "flex-col",
+      "items-center",
+      "justify-center",
+      "gap-4",
+      "font-bold"
+    );
+    popUpBg.appendChild(popUp);
 
-        popUp.appendChild(popUpBtn);
-        
-        popUpBtn.addEventListener("click", function() {
-          popUpBg.style.display = "none";
-        })
-      return; 
+    const popUpBtn = document.createElement("button");
+    popUpBtn.innerText = "Ok";
+    popUpBtn.classList.add(
+      "bg-yellow-400",
+      "hover:bg-yellow-500",
+      "px-12",
+      "py-3",
+      "rounded-xl",
+      "font-medium",
+      "text-xl",
+      "shadow-inner",
+      "shadow-white",
+      "border-t-2",
+      "border-x-2",
+      "border-b-4",
+      "border-yellow-600",
+      "w-full"
+    )
+
+    popUp.appendChild(popUpBtn);
+
+    popUpBtn.addEventListener("click", function () {
+      popUpBg.style.display = "none";
+    })
+    return;
   }
 
 
   function validateQuiz() {
-      alert(`Vous avez ${score} reponses`)
+    alert(`Vous avez ${score} reponses`)
   }
 
 
@@ -305,6 +339,18 @@ document.addEventListener("DOMContentLoaded", () => {
     svgPattern.src = "assets/images/pattern.svg";
     document.body.appendChild(svgPattern);
   }
+
+  function temps() {
+    let minuteDecompte = parseInt(chrono / 60, 10)
+    let secondeDecompte = parseInt(chrono % 60, 10);
+    minuteDecompte = minuteDecompte < 10 ? "0" + minuteDecompte : minuteDecompte
+    secondeDecompte = secondeDecompte < 10 ? "0" + secondeDecompte : secondeDecompte;
+    chronoText.innerText = minuteDecompte + ":" + secondeDecompte;
+    //temp = temp <= 0 ? 0 : temp - 1;
+    chrono = chrono + 1;
+  }
+  setInterval(temps, 1000);
+
 
   gameUI();
   console.log(selectionedAnswer)

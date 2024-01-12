@@ -1,10 +1,17 @@
 import { startMusic } from "./utils.js";
+const answerButtons = [];
+let selectionedAnswer = false;
 
 document.addEventListener("DOMContentLoaded", () => {
   // Variables globales
+  let score = 0;
+  let currentQuestionIndex = 0;
   const startGameBtn = document.getElementById("start-game");
-  const nextQuestionBtn = document.createElement("button");
-  nextQuestionBtn.textContent = "Question suivante";
+  let nextQuestionBtn = document.createElement("button");
+  nextQuestionBtn.innerText = "Question suivante";
+  // if (currentQuestionIndex === 9) {
+  //   nextQuestionBtn.innerText = "Valider le questionnaire";
+  // }
   nextQuestionBtn.classList.add(
     "bg-yellow-400",
     "hover:bg-yellow-500",
@@ -15,13 +22,20 @@ document.addEventListener("DOMContentLoaded", () => {
     "text-xl",
     "shadow-inner",
     "shadow-white",
+    "border-t-2",
+    "border-x-2",
     "border-b-4",
     "border-yellow-600",
     "w-full"
   );
   nextQuestionBtn.style.display = "none";
   nextQuestionBtn.addEventListener("click", () => {
-    nextQuestion();
+    if (currentQuestionIndex === 9) {
+      validateQuiz();
+    } else {
+      nextQuestion();
+    }
+    
     const myConfetti = confetti.create(conffetiCanvas, {
       resize: true,
       useWorker: true,
@@ -49,6 +63,8 @@ document.addEventListener("DOMContentLoaded", () => {
     "text-xl",
     "shadow-inner",
     "shadow-white",
+    "border-t-2",
+    "border-x-2",
     "border-b-4",
     "border-yellow-600",
     "w-full"
@@ -64,7 +80,9 @@ document.addEventListener("DOMContentLoaded", () => {
     "items-center",
     "p-4",
     "rounded-xl",
-    "border-4",
+    "border-t-4",
+    "border-x-4",
+    "border-b-8",
     "border-black"
   );
   const conffetiCanvas = document.createElement("canvas");
@@ -78,10 +96,10 @@ document.addEventListener("DOMContentLoaded", () => {
   );
   document.body.appendChild(conffetiCanvas);
 
-  let currentQuestionIndex = 0;
+  
 
   function startGame() {
-    startMusic("assets/mp3/countdown.mp3");
+    // startMusic("assets/mp3/countdown.mp3");
     startGameBtn.style.display = "none";
     nextQuestionBtn.style.display = "block";
     previousQuestionBtn.style.display = "block";
@@ -99,6 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
       })
       .then((data) => {
         // Data
+        
         const question = data.questions[currentQuestionIndex];
 
         const questionContainer = document.createElement("div");
@@ -110,48 +129,79 @@ document.addEventListener("DOMContentLoaded", () => {
           "justify-center",
           "items-center"
         );
+        
+        //
+        const questionNumber = document.createElement("h1");
+        questionNumber.innerHTML = `Question ${currentQuestionIndex + 1} / ${data.questions.length}`
+        questionNumber.classList.add("text-lg", "font-bold")
+        //
 
-        const questionTitle = document.createElement("h1");
+        const questionTitle = document.createElement("h2");
 
         questionTitle.innerHTML = question.question;
         questionTitle.classList.add("text-lg", "font-bold");
 
         const answerContainer = document.createElement("div");
         answerContainer.setAttribute("id", "answer-container");
-        answerContainer.classList.add("flex", "items-center", "gap-4");
+        answerContainer.classList.add("grid", "grid-cols-2", "gap-4", "w-full");
 
-        const answerButtons = [];
+        
 
         question.answers.forEach((answer, index) => {
           const answerBtn = document.createElement("button");
           answerBtn.classList.add(
-            "bg-black",
-            "text-white",
-            "py-2",
-            "px-4",
-            "rounded-lg"
+            "bg-gray-200",
+            "border-t-2",
+            "border-x-2",
+            "border-b-4",
+            "border-black",
+            "text-black",
+            "text-lg",
+            "size-24",
+            "rounded-lg",
+            "w-full",
+            "font-medium"
           );
           answerBtn.innerHTML = answer;
+
+          answerButtons.push(answerBtn);
+
           answerBtn.addEventListener("click", () => {
+            selectionedAnswer = true;
+            answerButtons.forEach((btn, idx) => {
+              if (idx !== index) {
+                btn.disabled = true;
+              }
+            });
+
             if (index + 1 === question.correct_answer) {
               answerBtn.classList.add("bg-green-500");
-              startMusic("assets/mp3/correct.mp3");
+              // selectionedAnswer = true;
+              score ++;
+              
+              // startMusic("assets/mp3/correct.mp3");
             } else {
               answerBtn.classList.add("bg-red-500");
-              startMusic("assets/mp3/wrong.mp3");
+              // selectionedAnswer = true;
+              // startMusic("assets/mp3/wrong.mp3");
             }
-            answerButtons.push(answerBtn);
             userAnswers[currentQuestionIndex] = index + 1;
           });
 
           if (userAnswers[currentQuestionIndex] === index + 1) {
-            answerBtn.classList.add("bg-yellow-500");
-            answerBtn.disabled = true;
+            if (index + 1 === question.correct_answer) {
+              answerBtn.classList.add("bg-green-500");
+              
+            } else {
+              answerBtn.classList.add("bg-red-500");
+            }
+            selectionedAnswer = true;
           }
 
           answerContainer.appendChild(answerBtn);
         });
 
+        questionContainer.appendChild(questionNumber);
         questionContainer.appendChild(questionTitle);
         questionContainer.appendChild(answerContainer);
 
@@ -165,17 +215,28 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
-  function nextQuestion() {
+  function nextQuestion() { 
+    //
+    if (!selectionedAnswer) {
+      alert("Sélectionner une réponse avant de passer à la question suivante.");
+      return; 
+    }
     currentQuestionIndex++;
-    board.innerHTML = "";
-    if (currentQuestionIndex < 5) {
+    
+      board.innerHTML = "";
+    if (currentQuestionIndex < 10) {
       showQuestion();
     } else {
-      board.innerHTML = "Vous avez fini les questions";
+      currentQuestionIndex = 0;
+      showQuestion();
     }
+    //
+    selectionedAnswer = false;
+    // }
+    
   }
-
   function previousQuestion() {
+    selectionedAnswer = true;
     currentQuestionIndex--;
     board.innerHTML = "";
     if (currentQuestionIndex >= 0) {
@@ -186,5 +247,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  function validateQuiz() {
+    alert(`Vous avez ${score} reponses`)
+  }
   startGameBtn.addEventListener("click", startGame);
 });
+

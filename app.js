@@ -175,8 +175,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function nextQuestion() {
     if (!selectionedAnswer) {
-      alert("Sélectionner une réponse avant de passer à la question suivante.");
-      return; 
+      popUpFunction();
+      return;
     }
     currentQuestionIndex++;
     board.innerHTML = "";
@@ -188,6 +188,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     selectionedAnswer = false;
   }
+
 
   function previousQuestion() {
     selectionedAnswer = true;
@@ -201,13 +202,76 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function validateQuiz() {
-    
-      alert(`Vous avez ${score} reponses`)
-    
-    
-   
+  function popUpFunction() {
+    const popUpBg = document.createElement("div");
+      // popUpBg.style.display = "flex";
+      popUpBg.classList.add (
+        "h-full",
+        "w-full",
+        "absolute",
+        "bg-black/40",
+        "flex",
+        "justify-center",
+        "items-center"
+      )
+    // popUp.style.postion = "absolute"
+    document.body.appendChild(popUpBg)
+
+        const popUp = document.createElement("div");
+        popUp.innerText = "Sélectionnez une réponse"
+        popUp.classList.add (
+          "px-16",
+          "py-12",
+          "bg-white",
+          "border-t-2",
+            "border-x-2",
+            "border-b-4",
+            "border-black",
+            "text-black",
+            "text-lg",
+            "rounded-lg",
+            "absolute",
+            "flex",
+            "flex-col",
+            "items-center",
+            "justify-center",
+            "gap-4",
+            "font-bold"
+        );
+        popUpBg.appendChild(popUp);
+      
+        const popUpBtn = document.createElement("button");
+        popUpBtn.innerText = "Ok";
+        popUpBtn.classList.add(
+          "bg-yellow-400",
+          "hover:bg-yellow-500",
+          "px-12",
+          "py-3",
+          "rounded-xl",
+          "font-medium",
+          "text-xl",
+          "shadow-inner",
+          "shadow-white",
+          "border-t-2",
+          "border-x-2",
+          "border-b-4",
+          "border-yellow-600",
+          "w-full"
+        )
+
+        popUp.appendChild(popUpBtn);
+        
+        popUpBtn.addEventListener("click", function() {
+          popUpBg.style.display = "none";
+        })
+      return; 
   }
+
+
+  function validateQuiz() {
+      alert(`Vous avez ${score} reponses`)
+  }
+
 
   function gameUI() {
     const logo = document.createElement("img");

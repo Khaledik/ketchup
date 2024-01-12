@@ -1,28 +1,10 @@
 import { startMusic } from "./utils.js";
+import { createButton } from "./ui.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   // Variables globales
   const startGameBtn = document.getElementById("start-game");
-  const nextQuestionBtn = document.createElement("button");
-  nextQuestionBtn.textContent = "Question suivante";
-  nextQuestionBtn.classList.add(
-    "bg-yellow-400",
-    "hover:bg-yellow-500",
-    "px-12",
-    "py-3",
-    "rounded-xl",
-    "font-medium",
-    "text-xl",
-    "shadow-inner",
-    "shadow-white",
-    "border-t-2",
-    "border-x-2",
-    "border-b-4",
-    "border-yellow-600",
-    "w-full"
-  );
-  nextQuestionBtn.style.display = "none";
-  nextQuestionBtn.addEventListener("click", () => {
+  const nextQuestionBtn = createButton("Question suivante", () => {
     nextQuestion();
     const myConfetti = confetti.create(conffetiCanvas, {
       resize: true,
@@ -34,31 +16,15 @@ document.addEventListener("DOMContentLoaded", () => {
       spread: 360,
       origin: {
         x: Math.random(),
-        // since they fall down, start a bit higher than random
         y: Math.random() - 0.2,
       },
     });
+    console.log(currentQuestionIndex);
   });
-  const previousQuestionBtn = document.createElement("button");
-  previousQuestionBtn.textContent = "Question précédente";
-  previousQuestionBtn.classList.add(
-    "bg-yellow-400",
-    "hover:bg-yellow-500",
-    "px-12",
-    "py-3",
-    "rounded-xl",
-    "font-medium",
-    "text-xl",
-    "shadow-inner",
-    "shadow-white",
-    "border-t-2",
-    "border-x-2",
-    "border-b-4",
-    "border-yellow-600",
-    "w-full"
+  const previousQuestionBtn = createButton(
+    "Question précédente",
+    previousQuestion
   );
-  previousQuestionBtn.style.display = "none";
-  previousQuestionBtn.addEventListener("click", previousQuestion);
   const board = document.createElement("div");
   board.classList.add(
     "bg-white",
@@ -156,19 +122,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (index + 1 === question.correct_answer) {
               answerBtn.classList.add("bg-green-500");
-              // startMusic("assets/mp3/correct.mp3");
+              startMusic("assets/mp3/correct.mp3");
             } else {
               answerBtn.classList.add("bg-red-500");
-              // startMusic("assets/mp3/wrong.mp3");
+              startMusic("assets/mp3/wrong.mp3");
             }
             userAnswers[currentQuestionIndex] = index + 1;
           });
 
-          if (userAnswers[currentQuestionIndex] === index + 1) {
-            if (index + 1 === question.correct_answer) {
-              answerBtn.classList.add("bg-green-500");
+          if (userAnswers[currentQuestionIndex] !== undefined) {
+            if (userAnswers[currentQuestionIndex] === index + 1) {
+              if (index + 1 === question.correct_answer) {
+                answerBtn.classList.add("bg-green-500");
+              } else {
+                answerBtn.classList.add("bg-red-500");
+              }
             } else {
-              answerBtn.classList.add("bg-red-500");
+              answerBtn.disabled = true;
             }
           }
 
@@ -191,7 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function nextQuestion() {
     currentQuestionIndex++;
     board.innerHTML = "";
-    if (currentQuestionIndex < 5) {
+    if (currentQuestionIndex < 10) {
       showQuestion();
     } else {
       currentQuestionIndex = 0;
@@ -209,6 +179,27 @@ document.addEventListener("DOMContentLoaded", () => {
       showQuestion();
     }
   }
+
+  function gameUI() {
+    const logo = document.createElement("img");
+    logo.src = "assets/images/logo.png";
+    logo.alt = "Logo";
+    document.body.appendChild(logo);
+    document.body.insertBefore(logo, document.body.firstChild);
+    const svgPattern = document.createElement("img");
+    svgPattern.classList.add(
+      "absolute",
+      "top-0",
+      "left-0",
+      "w-full",
+      "h-full",
+      "-z-10"
+    );
+    svgPattern.src = "assets/images/pattern.svg";
+    document.body.appendChild(svgPattern);
+  }
+
+  gameUI();
 
   startGameBtn.addEventListener("click", startGame);
 });

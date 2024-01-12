@@ -94,6 +94,21 @@ document.addEventListener("DOMContentLoaded", () => {
         questionNumber.innerHTML = `Question ${currentQuestionIndex + 1} / ${data.questions.length}`
         questionNumber.classList.add("text-lg", "font-bold")
 
+
+        const ketchupImgs = document.createElement("div");
+        ketchupImgs.style.backgroundImage = `url(assets/images/ketchup-quiz-img-${currentQuestionIndex + 1}.jpg)`;
+        ketchupImgs.classList.add(
+          "w-96",
+          "h-64",
+          "bg-cover",
+          "bg-center",
+          "rounded-lg",
+          "border-t-2",
+          "border-x-2",
+          "border-b-4",
+          "border-black"
+        )
+        
         const questionTitle = document.createElement("h2");
 
         questionTitle.innerHTML = question.question;
@@ -160,6 +175,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         questionContainer.appendChild(questionNumber);
+        questionContainer.appendChild(ketchupImgs);
         questionContainer.appendChild(questionTitle);
         questionContainer.appendChild(answerContainer);
 
@@ -204,7 +220,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function popUpFunction() {
     const popUpBg = document.createElement("div");
-      // popUpBg.style.display = "flex";
       popUpBg.classList.add (
         "h-full",
         "w-full",
@@ -214,7 +229,6 @@ document.addEventListener("DOMContentLoaded", () => {
         "justify-center",
         "items-center"
       )
-    // popUp.style.postion = "absolute"
     document.body.appendChild(popUpBg)
 
         const popUp = document.createElement("div");

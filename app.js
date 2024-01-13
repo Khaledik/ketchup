@@ -328,8 +328,176 @@ document.addEventListener("DOMContentLoaded", () => {
 
   //la function ou il y aura le score board
   function validateQuiz() {
-    alert(`Vous avez ${score} reponses`)
+    // On supprime le board
+    board.remove();
+
+    // Container qui va stocker l'ensemble des stats de la partie
+    const statsContainer = document.createElement("div");
+    statsContainer.classList.add(
+      "bg-white",
+      "flex",
+      "flex-col",
+      "gap-4",
+      "justify-center",
+      "items-center",
+      "p-8",
+      "rounded-xl",
+      "border-t-4",
+      "border-x-4",
+      "border-b-8",
+      "border-black"
+    );
+    document.body.appendChild(statsContainer);
+
+    // Partie génération du sous-titre et titre avec phrase personnalisé Gagné ou Perdu avec le prénom du joueur
+    const statsCustomSentence = document.createElement("div");
+    statsCustomSentence.classList.add(
+      "flex",
+      "flex-col",
+      "items-center",
+      "gap-2"
+    );
+
+    const statsSubTitle = document.createElement("h5");
+    statsSubTitle.classList.add("text-gray-900", "text-lg");
+
+    const statsSubTitleUserName = document.createElement("span");
+    statsSubTitleUserName.classList.add("font-bold", "text-black");
+    statsSubTitleUserName.innerText = "Khaled !";
+    statsSubTitle.appendChild(statsSubTitleUserName);
+
+    const statsTitle = document.createElement("h4");
+    statsTitle.classList.add("font-bold", "text-3xl");
+
+    const statsTrophy = document.createElement("img");
+
+    statsTrophy.classList.add("w-20", "mt-5");
+
+    statsCustomSentence.appendChild(statsSubTitle);
+    statsCustomSentence.appendChild(statsTitle);
+    statsCustomSentence.appendChild(statsTrophy);
+
+    if (score <= 3) {
+      statsSubTitle.innerText =
+        "Essaie encore " + statsSubTitleUserName.innerText;
+      statsTitle.innerText = "Vous avez Perdu...";
+      statsTrophy.src = "./assets/images/bronze-trophy.svg";
+    } else if (score <= 6) {
+      statsSubTitle.innerText =
+        "Félicitation " + statsSubTitleUserName.innerText;
+      statsTitle.innerText = "Vous avez gagné !";
+      statsTrophy.src = "./assets/images/silver-trophy.svg";
+    } else {
+      statsSubTitle.innerText =
+        "Félicitation " + statsSubTitleUserName.innerText;
+      statsTitle.innerText = "Vous avez gagné !";
+      statsTrophy.src = "./assets/images/gold-trophy.svg";
+    }
+
+    // Partie génération du score du joueur
+
+    const statsScoreContainer = document.createElement("div");
+    statsScoreContainer.classList.add("flex", "flex-col", "items-center");
+
+    const statsScore = document.createElement("p");
+    statsScore.classList.add("font-bold", "text-4xl");
+    statsScore.innerText = score * 10;
+
+    const statsScoreText = document.createElement("p");
+    statsScoreText.classList.add("text-lg");
+    statsScoreText.innerText = "Points";
+
+    statsScoreContainer.appendChild(statsScore);
+    statsScoreContainer.appendChild(statsScoreText);
+
+    // Partie génération des Stats Questions
+
+    const statsQuestionContainer = document.createElement("div");
+    statsQuestionContainer.classList.add("flex", "items-center", "gap-10");
+
+    //  Le nombre de bonne réponse trouvée
+
+    const statsQuestionGood = document.createElement("div");
+    statsQuestionGood.classList.add(
+      "flex",
+      "flex-col",
+      "items-center",
+      "gap-2"
+    );
+
+    const statsQuestionGoodImg = document.createElement("img");
+    statsQuestionGoodImg.src = "./assets/images/check-circle.svg";
+    statsQuestionGoodImg.classList.add("w-10");
+
+    const statsQuestionGoodRatio = document.createElement("p");
+    statsQuestionGoodRatio.classList.add("font-bold", "text-lg");
+    statsQuestionGoodRatio.innerText = "3/5";
+
+    const statsQuestionGoodRatioTxt = document.createElement("p");
+    statsQuestionGoodRatioTxt.classList.add("font-bold", "text-lg");
+    statsQuestionGoodRatioTxt.innerText = "Bonne Réponse";
+
+    statsQuestionContainer.appendChild(statsQuestionGood);
+    statsQuestionGood.appendChild(statsQuestionGoodImg);
+    statsQuestionGood.appendChild(statsQuestionGoodRatio);
+    statsQuestionGood.appendChild(statsQuestionGoodRatioTxt);
+
+    //  Le divider
+
+    const statsQuestionDivider = document.createElement("hr");
+    statsQuestionDivider.classList.add("w-0.5", "h-20", "bg-black");
+    statsQuestionContainer.appendChild(statsQuestionDivider);
+
+    //  Le nombre de mauvaise réponse trouvée
+
+    const statsQuestionBad = document.createElement("div");
+    statsQuestionBad.classList.add("flex", "flex-col", "items-center", "gap-2");
+
+    const statsQuestionBadImg = document.createElement("img");
+    statsQuestionBadImg.src = "./assets/images/x-circle.svg";
+    statsQuestionBadImg.classList.add("w-10");
+
+    const statsQuestionBadRatio = document.createElement("p");
+    statsQuestionBadRatio.classList.add("font-bold", "text-lg");
+    statsQuestionBadRatio.innerText = "2/5";
+
+    const statsQuestionBadRatioTxt = document.createElement("p");
+    statsQuestionBadRatioTxt.classList.add("font-bold", "text-lg");
+    statsQuestionBadRatioTxt.innerText = "Mauvaise Réponse";
+
+    statsQuestionContainer.appendChild(statsQuestionBad);
+    statsQuestionBad.appendChild(statsQuestionBadImg);
+    statsQuestionBad.appendChild(statsQuestionBadRatio);
+    statsQuestionBad.appendChild(statsQuestionBadRatioTxt);
+
+    //  Génération du Bouton pour lancer une nouvelle partie
+
+    const newGameBtn = document.createElement("button");
+    newGameBtn.classList.add(
+      "bg-yellow-400",
+      "hover:bg-yellow-500",
+      "px-12",
+      "py-3",
+      "rounded-xl",
+      "font-medium",
+      "text-xl",
+      "shadow-inner",
+      "shadow-white",
+      "border-t-2",
+      "border-x-2",
+      "border-b-4",
+      "border-yellow-600",
+      "w-full"
+    );
+    newGameBtn.innerText = "Nouvelle Partie";
+
+    // On attache tout les élement au container stats
+    statsContainer.appendChild(statsCustomSentence);
+    statsContainer.appendChild(statsScoreContainer);
+    statsContainer.appendChild(statsQuestionContainer);
+    statsContainer.appendChild(newGameBtn);
   }
+
 
 
   function gameUI() {

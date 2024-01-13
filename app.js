@@ -28,9 +28,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     console.log(currentQuestionIndex);
   });
-  const previousQuestionBtn = createButton(
-    "Question précédente",
-    previousQuestion
+  
+  const previousQuestionBtn = createButton("Question précedent", () => {
+    if (currentQuestionIndex > 0) { //permet de desactiver la fonctionalité du bouton précédent sur la premiere page
+      previousQuestion()
+    }
+  }
+    
   );
   const board = document.createElement("div");
   board.classList.add(
@@ -101,8 +105,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // startMusic("assets/mp3/countdown.mp3");
     startGameBtn.style.display = "none";
-    nextQuestionBtn.style.display = "block";
-    previousQuestionBtn.style.display = "block";
+    // nextQuestionBtn.style.display = "block";
+    //   previousQuestionBtn.style.display = "block";
     board.style.display = "flex";
     chronoBorder.style.display = "block";
     chronoContainer.style.display = "block";
@@ -143,8 +147,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const ketchupImgs = document.createElement("div");
         ketchupImgs.style.backgroundImage = `url(assets/images/ketchup-quiz-img-${currentQuestionIndex + 1}.jpg)`;
         ketchupImgs.classList.add(
-          "w-96",
-          "h-64",
+          "w-80",
+          "h-48",
           "bg-cover",
           "bg-center",
           "rounded-lg",

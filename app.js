@@ -3,29 +3,21 @@ import { createButton } from "./ui.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   // Variables globales
-  let chrono = 0;
+  let userAnswers = []; // Récupérer les réponses de l'utilisateur
+  let answerButtons = [];
+  let timer;
+  let seconds = 0;
   let score = 0;
+  let questionsLength; //rend la longueur du tableau des questions en global
   let selectionedAnswer = false; //le boolean qui permet d'avoir le popup quand aucune reponse n'est selectioné
   const startGameBtn = document.getElementById("start-game");
   const nextQuestionBtn = createButton("Question suivante", () => {
     if (currentQuestionIndex === 9 && selectionedAnswer === true) { // permet d'aller sur le scoreBoard à la fin des questions
+      stopTimer();
       validateQuiz();
     } else {
       nextQuestion();
     }
-    const myConfetti = confetti.create(conffetiCanvas, {
-      resize: true,
-      useWorker: true,
-    });
-    myConfetti({
-      particleCount: 100,
-      startVelocity: 30,
-      spread: 360,
-      origin: {
-        x: Math.random(),
-        y: Math.random() - 0.2,
-      },
-    });
     console.log(currentQuestionIndex);
   });
   
@@ -63,9 +55,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   //Chronometre
-  const chronoBorder = document.createElement("div");
-  chronoBorder.style.display = "none";
-  chronoBorder.classList.add(
+  const timerBorder = document.createElement("div");
+  timerBorder.style.display = "none";
+  timerBorder.classList.add(
     "absolute",
     "top-4",
     "right-4",
@@ -73,11 +65,11 @@ document.addEventListener("DOMContentLoaded", () => {
     "p-1.5",
     "rounded-2xl"
   );
-  document.body.appendChild(chronoBorder);
+  document.body.appendChild(timerBorder);
 
-  const chronoContainer = document.createElement("div");
-  chronoContainer.style.display = "none";
-  chronoContainer.classList.add(
+  const timerContainer = document.createElement("div");
+  timerContainer.style.display = "none";
+  timerContainer.classList.add(
     "bg-yellow-400",
     "px-4",
     "py-3",
@@ -88,14 +80,14 @@ document.addEventListener("DOMContentLoaded", () => {
     "border-b-4",
     "border-yellow-600"
   );
-  chronoBorder.appendChild(chronoContainer);
+  timerBorder.appendChild(timerContainer);
 
-  const chronoText = document.createElement("p");
-  chronoText.classList.add(
+  const timerText = document.createElement("p");
+  timerText.classList.add(
     "font-bold",
     "text-xl"
   );
-  chronoContainer.appendChild(chronoText);
+  timerContainer.appendChild(timerText);
 
 
 
@@ -108,13 +100,13 @@ document.addEventListener("DOMContentLoaded", () => {
     // nextQuestionBtn.style.display = "block";
     //   previousQuestionBtn.style.display = "block";
     board.style.display = "flex";
-    chronoBorder.style.display = "block";
-    chronoContainer.style.display = "block";
+    timerBorder.style.display = "block";
+    timerContainer.style.display = "block";
     showQuestion();
-    setInterval(temps, 1000); //lance le chrono
+    startTimer(); //lance le chrono
   }
 
-  const userAnswers = []; // Récupérer les réponses de l'utilisateur
+  
 
   function showQuestion() {
    
@@ -126,6 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((data) => {
         // Data
         const question = data.questions[currentQuestionIndex];
+        questionsLength = data.questions.length; //Sert à rendre la longueur de tableau en variable global
 
         const questionContainer = document.createElement("div");
         questionContainer.setAttribute("id", "question-container");
@@ -140,7 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         //les numeros des questions
         const questionNumber = document.createElement("h1");
-        questionNumber.innerHTML = `Question ${currentQuestionIndex + 1} / ${data.questions.length}`
+        questionNumber.innerHTML = `Question ${currentQuestionIndex + 1} / ${questionsLength}`
         questionNumber.classList.add("text-lg", "font-bold")
 
         //les images
@@ -166,7 +159,7 @@ document.addEventListener("DOMContentLoaded", () => {
         answerContainer.setAttribute("id", "answer-container");
         answerContainer.classList.add("grid", "grid-cols-2", "gap-4", "w-full");
 
-        const answerButtons = [];
+        
 
         question.answers.forEach((answer, index) => {
           const answerBtn = document.createElement("button");
@@ -199,6 +192,19 @@ document.addEventListener("DOMContentLoaded", () => {
               score++;
               answerBtn.classList.add("bg-green-500");
               startMusic("assets/mp3/correct.mp3");
+              const myConfetti = confetti.create(conffetiCanvas, {
+                resize: true,
+                useWorker: true,
+              });
+              myConfetti({
+                particleCount: 100,
+                startVelocity: 30,
+                spread: 360,
+                origin: {
+                  x: Math.random(),
+                  y: Math.random() - 0.2,
+                },
+              });
             } else {
               answerBtn.classList.add("bg-red-500");
               startMusic("assets/mp3/wrong.mp3");
@@ -244,7 +250,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     currentQuestionIndex++;
     board.innerHTML = "";
-    if (currentQuestionIndex < 10) {
+    if (currentQuestionIndex < questionsLength) {
       showQuestion();
     } 
     selectionedAnswer = false;
@@ -330,6 +336,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function validateQuiz() {
     // On supprime le board
     board.remove();
+    
 
     // Container qui va stocker l'ensemble des stats de la partie
     const statsContainer = document.createElement("div");
@@ -490,6 +497,9 @@ document.addEventListener("DOMContentLoaded", () => {
       "w-full"
     );
     newGameBtn.innerText = "Nouvelle Partie";
+    newGameBtn.addEventListener("click", function() {
+      newGame(statsContainer);
+    })
 
     // On attache tout les élement au container stats
     statsContainer.appendChild(statsCustomSentence);
@@ -497,7 +507,6 @@ document.addEventListener("DOMContentLoaded", () => {
     statsContainer.appendChild(statsQuestionContainer);
     statsContainer.appendChild(newGameBtn);
   }
-
 
 
   function gameUI() {
@@ -521,16 +530,42 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   //fonction pour le chronometre
-  function temps() {
-    let minuteDecompte = parseInt(chrono / 60, 10)
-    let secondeDecompte = parseInt(chrono % 60, 10);
-    minuteDecompte = minuteDecompte < 10 ? "0" + minuteDecompte : minuteDecompte
-    secondeDecompte = secondeDecompte < 10 ? "0" + secondeDecompte : secondeDecompte;
-    chronoText.innerText = minuteDecompte + ":" + secondeDecompte;
-    //temp = temp <= 0 ? 0 : temp - 1;
-    chrono = chrono + 1;
-  }
- 
+  function startTimer(){
+    timer = setInterval(() => { // Démarre une intervalle qui s'éxécute toutes les secondes
+        seconds++; // Incrémente le compteur de seconde
+        const minutes = Math.floor(seconds / 60); // Calcule les minute
+        const remainingSeconds = seconds % 60; // Calcule les secondes qui reste
+        if (minutes < 10 && remainingSeconds < 10) {
+            timerText.textContent = `0${minutes}:0${remainingSeconds}`;
+        }else if (minutes < 10){ 
+            timerText.textContent = `0${minutes}:${remainingSeconds}`;
+        }else if(remainingSeconds < 10) {
+            timerText.textContent = `${minutes}:0${remainingSeconds}`;
+        }else{
+            timerText.textContent = `${minutes}:${remainingSeconds}`;
+        }
+    }, 1000);
+}
+
+  function stopTimer() {
+  clearInterval(timer);
+  };
+
+
+  function newGame(statsContainer) {
+    timerText.innerHTML = "00:00";
+    seconds = 0;
+    timerBorder.style.display = "none";
+    timerContainer.style.display = "none";
+    score = 0;
+    selectionedAnswer = false;
+    currentQuestionIndex = 0;
+    statsContainer.remove();
+    answerButtons = [];
+    userAnswers = [];
+    board.innerHTML = ""; // Récupérer les réponses de l'utilisateur
+    startGameBtn.style.display = "block";
+  };
 
 
   gameUI();

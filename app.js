@@ -12,6 +12,9 @@ document.addEventListener("DOMContentLoaded", () => {
   let selectionedAnswer = false; //le boolean qui permet d'avoir le popup quand aucune reponse n'est selectioné
   const startGameBtn = document.getElementById("start-game");
   const nextQuestionBtn = createButton("Question suivante", () => {
+    if(currentQuestionIndex === 8) {
+      nextQuestionBtn.innerHTML = "Valider Quiz"; // à optimiser????
+    }
     if (currentQuestionIndex === 9 && selectionedAnswer === true) { // permet d'aller sur le scoreBoard à la fin des questions
       stopTimer();
       validateQuiz();
@@ -261,6 +264,7 @@ document.addEventListener("DOMContentLoaded", () => {
     selectionedAnswer = true;
     currentQuestionIndex--;
     board.innerHTML = "";
+    nextQuestionBtn.innerHTML = "Question suivante"; // à optimiser????
     if (currentQuestionIndex >= 0) {
       showQuestion();
     } 
@@ -564,6 +568,7 @@ document.addEventListener("DOMContentLoaded", () => {
     answerButtons = [];
     userAnswers = [];
     board.innerHTML = ""; // Récupérer les réponses de l'utilisateur
+    nextQuestionBtn.innerHTML = "Question suivante"; // à optimiser??
     startGameBtn.style.display = "block";
   };
 

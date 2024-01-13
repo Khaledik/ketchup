@@ -42,6 +42,7 @@ Clone the project
 
 - [@maximehery](https://github.com/maximehery)
 - [@Selkyn](https://github.com/Selkyn)
+- [@Khaledik](https://github.com/Khaledik)
 - [@caro30a](https://github.com/caro30a)
 - [@Dylantrgt](https://github.com/Dylantrgt)
 

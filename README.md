@@ -9,7 +9,7 @@
 
 ## How to Play
 
-The goal is simple: accumulate as many points as possible by answering the questions correctly. Each correct answer brings you one step closer to becoming a ketchup connoisseur. Challenge yourself, compete with friends, and see who can achieve the highest score in this fun and informative quiz.
+**The goal is simple :** accumulate as many points as possible by answering the questions correctly. Each correct answer brings you one step closer to becoming a ketchup connoisseur. Challenge yourself, compete with friends, and see who can achieve the highest score in this fun and informative quiz.
 ## Features
 
 - **10 Engaging Questions :** Test your knowledge with a carefully curated set of 10 questions about ketchup – from its history to fun facts and usage.

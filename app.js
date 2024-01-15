@@ -1,4 +1,4 @@
-import { startMusic } from "./utils.js";
+import { startMusic, stopMusic } from "./utils.js";
 import { createButton } from "./ui.js";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -8,14 +8,20 @@ document.addEventListener("DOMContentLoaded", () => {
   let timer;
   let seconds = 0;
   let score = 0;
+  let userName;
+  let userNameContainer;
+  let userNameInput;
   let questionsLength; //rend la longueur du tableau des questions en global
   let selectionedAnswer = false; //le boolean qui permet d'avoir le popup quand aucune reponse n'est selectioné
+
   const startGameBtn = document.getElementById("start-game");
   const nextQuestionBtn = createButton("Question suivante", () => {
-    if(currentQuestionIndex === 8) {
+    if (currentQuestionIndex === 8) {
       nextQuestionBtn.innerHTML = "Valider Quiz"; // à optimiser????
     }
-    if (currentQuestionIndex === 9 && selectionedAnswer === true) { // permet d'aller sur le scoreBoard à la fin des questions
+    if (currentQuestionIndex === 9 && selectionedAnswer === true) {
+      // permet d'aller sur le scoreBoard à la fin des questions
+      musicAudio.pause();
       stopTimer();
       validateQuiz();
     } else {
@@ -23,14 +29,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     console.log(currentQuestionIndex);
   });
-  
+
   const previousQuestionBtn = createButton("Question précedent", () => {
-    if (currentQuestionIndex > 0) { //permet de desactiver la fonctionalité du bouton précédent sur la premiere page
-      previousQuestion()
+    if (currentQuestionIndex > 0) {
+      //permet de desactiver la fonctionalité du bouton précédent sur la premiere page
+      previousQuestion();
     }
-  }
-    
-  );
+  });
   const board = document.createElement("div");
   board.classList.add(
     "bg-white",
@@ -55,6 +60,53 @@ document.addEventListener("DOMContentLoaded", () => {
     "-z-10"
   );
   document.body.appendChild(conffetiCanvas);
+
+
+//bouton musique
+const musicBorder = document.createElement("div");
+musicBorder.classList.add(
+  "absolute",
+  "top-4",
+  "left-4",
+  "bg-black/40",
+  "p-1.5",
+  "rounded-2xl"
+);
+document.body.appendChild(musicBorder);
+
+const musicBtn = document.createElement("button");
+musicBtn.classList.add(
+    "bg-yellow-400",
+    "px-4",
+    "py-3",
+    "rounded-xl",
+    "text-xl",
+    "shadow-inner",
+    "shadow-white",
+    "border-b-4",
+    "border-yellow-600"
+);
+musicBorder.appendChild(musicBtn);
+
+let musicAudio = document.createElement("audio");
+musicAudio.src = "assets/mp3/countdown.mp3";
+musicAudio.loop = true;
+musicBtn.appendChild(musicAudio);
+const musicImg = document.createElement("img");
+musicImg.src = "assets/images/volume-on.svg";
+musicBtn.appendChild(musicImg);
+
+//Bouton pour arreter ou play la musique
+let startStopMusic = true;
+musicBtn.addEventListener("click", function() {
+  if (startStopMusic) {
+    musicAudio.pause();
+    startStopMusic = false
+  }else {
+    musicAudio.play();
+    startStopMusic = true
+  }
+});
 
 
   //Chronometre
@@ -86,39 +138,36 @@ document.addEventListener("DOMContentLoaded", () => {
   timerBorder.appendChild(timerContainer);
 
   const timerText = document.createElement("p");
-  timerText.classList.add(
-    "font-bold",
-    "text-xl"
-  );
+  timerText.classList.add("font-bold", "text-xl");
   timerContainer.appendChild(timerText);
-
-
 
   let currentQuestionIndex = 0;
 
   function startGame() {
+    userName = userNameInput.value;
+    // arrayScoreBoardPlayers.push(userName);
 
-    // startMusic("assets/mp3/countdown.mp3");
-    startGameBtn.style.display = "none";
-    // nextQuestionBtn.style.display = "block";
-    //   previousQuestionBtn.style.display = "block";
-    board.style.display = "flex";
-    timerBorder.style.display = "block";
-    timerContainer.style.display = "block";
-    showQuestion();
-    startTimer(); //lance le chrono
+    if (userName !== "") {
+      musicAudio.play();
+      userNameContainer.style.display = "none";
+      startGameBtn.style.display = "none";
+      board.style.display = "flex";
+      timerBorder.style.display = "block";
+      timerContainer.style.display = "block";
+      showQuestion();
+      startTimer(); //lance le chrono
+    } else {
+      popUpFunction("Veuillez saisir votre Prénom");
+    }
   }
 
-  
-
   function showQuestion() {
-   
     // Récupérer les données du JSON
     fetch("assets/data/trivia.json")
-      .then((response) => {
+      .then(response => {
         return response.json();
       })
-      .then((data) => {
+      .then(data => {
         // Data
         const question = data.questions[currentQuestionIndex];
         questionsLength = data.questions.length; //Sert à rendre la longueur de tableau en variable global
@@ -133,15 +182,18 @@ document.addEventListener("DOMContentLoaded", () => {
           "items-center"
         );
 
-
         //les numeros des questions
         const questionNumber = document.createElement("h1");
-        questionNumber.innerHTML = `Question ${currentQuestionIndex + 1} / ${questionsLength}`
-        questionNumber.classList.add("text-lg", "font-bold")
+        questionNumber.innerHTML = `Question ${
+          currentQuestionIndex + 1
+        } / ${questionsLength}`;
+        questionNumber.classList.add("text-lg", "font-bold");
 
         //les images
         const ketchupImgs = document.createElement("div");
-        ketchupImgs.style.backgroundImage = `url(assets/images/ketchup-quiz-img-${currentQuestionIndex + 1}.jpg)`;
+        ketchupImgs.style.backgroundImage = `url(assets/images/ketchup-quiz-img-${
+          currentQuestionIndex + 1
+        }.jpg)`;
         ketchupImgs.classList.add(
           "w-80",
           "h-48",
@@ -152,7 +204,7 @@ document.addEventListener("DOMContentLoaded", () => {
           "border-x-2",
           "border-b-4",
           "border-black"
-        )
+        );
 
         const questionTitle = document.createElement("h2");
         questionTitle.innerHTML = question.question;
@@ -161,8 +213,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const answerContainer = document.createElement("div");
         answerContainer.setAttribute("id", "answer-container");
         answerContainer.classList.add("grid", "grid-cols-2", "gap-4", "w-full");
-
-        
 
         question.answers.forEach((answer, index) => {
           const answerBtn = document.createElement("button");
@@ -241,24 +291,23 @@ document.addEventListener("DOMContentLoaded", () => {
         board.appendChild(previousQuestionBtn);
         document.body.appendChild(board);
       })
-      .catch((error) => {
+      .catch(error => {
         console.error(error);
       });
   }
 
   function nextQuestion() {
     if (!selectionedAnswer) {
-      popUpFunction(); 
+      popUpFunction("Sélectionnez une réponse");
       return;
     }
     currentQuestionIndex++;
     board.innerHTML = "";
     if (currentQuestionIndex < questionsLength) {
       showQuestion();
-    } 
+    }
     selectionedAnswer = false;
   }
-
 
   function previousQuestion() {
     selectionedAnswer = true;
@@ -267,12 +316,11 @@ document.addEventListener("DOMContentLoaded", () => {
     nextQuestionBtn.innerHTML = "Question suivante"; // à optimiser????
     if (currentQuestionIndex >= 0) {
       showQuestion();
-    } 
+    }
   }
 
-
   //function pour afficher le message quand aucune question n'a été selectioné
-  function popUpFunction() {
+  function popUpFunction(message) {
     const popUpBg = document.createElement("div");
     popUpBg.classList.add(
       "h-screen",
@@ -282,11 +330,11 @@ document.addEventListener("DOMContentLoaded", () => {
       "flex",
       "justify-center",
       "items-center"
-    )
-    document.body.appendChild(popUpBg)
+    );
+    document.body.appendChild(popUpBg);
 
     const popUp = document.createElement("div");
-    popUp.innerText = "Sélectionnez une réponse"
+    popUp.innerText = message;
     popUp.classList.add(
       "px-16",
       "py-12",
@@ -309,7 +357,7 @@ document.addEventListener("DOMContentLoaded", () => {
     popUpBg.appendChild(popUp);
 
     const popUpBtn = document.createElement("button");
-    popUpBtn.innerText = "Ok";
+    popUpBtn.innerText = "OK";
     popUpBtn.classList.add(
       "bg-yellow-400",
       "hover:bg-yellow-500",
@@ -325,22 +373,20 @@ document.addEventListener("DOMContentLoaded", () => {
       "border-b-4",
       "border-yellow-600",
       "w-full"
-    )
+    );
 
     popUp.appendChild(popUpBtn);
 
     popUpBtn.addEventListener("click", function () {
       popUpBg.style.display = "none";
-    })
+    });
     return;
   }
-
 
   //la function ou il y aura le score board
   function validateQuiz() {
     // On supprime le board
     board.remove();
-    
 
     // Container qui va stocker l'ensemble des stats de la partie
     const statsContainer = document.createElement("div");
@@ -373,9 +419,8 @@ document.addEventListener("DOMContentLoaded", () => {
     statsSubTitle.classList.add("text-gray-900", "text-lg");
 
     const statsSubTitleUserName = document.createElement("span");
-    statsSubTitleUserName.classList.add("font-bold", "text-black");
-    statsSubTitleUserName.innerText = "Khaled !";
-    statsSubTitle.appendChild(statsSubTitleUserName);
+    statsSubTitleUserName.classList.add("font-bold");
+    statsSubTitleUserName.innerText = userName;
 
     const statsTitle = document.createElement("h4");
     statsTitle.classList.add("font-bold", "text-3xl");
@@ -388,22 +433,29 @@ document.addEventListener("DOMContentLoaded", () => {
     statsCustomSentence.appendChild(statsTitle);
     statsCustomSentence.appendChild(statsTrophy);
 
-    if (score <= 3) {
-      statsSubTitle.innerText =
-        "Essaie encore " + statsSubTitleUserName.innerText;
-      statsTitle.innerText = "Vous avez Perdu...";
+    if (score == 0) {
+      statsSubTitle.innerText = "Essaie encore! La victoire est à portée, ";
+      statsTitle.innerText = "Hélas, pas cette fois...";
       statsTrophy.src = "./assets/images/bronze-trophy.svg";
+      statsTrophy.alt = "icone-trophé-bronze";
+    } else if (score <= 3) {
+      statsSubTitle.innerText = "Bien joué! Sur la bonne voie, ";
+      statsTitle.innerText = "Bronze remporté !";
+      statsTrophy.src = "./assets/images/bronze-trophy.svg";
+      statsTrophy.alt = "icone-trophé-bronze";
     } else if (score <= 6) {
-      statsSubTitle.innerText =
-        "Félicitation " + statsSubTitleUserName.innerText;
-      statsTitle.innerText = "Vous avez gagné !";
+      statsSubTitle.innerText = "Félicitations! Performance remarquable, ";
+      statsTitle.innerText = "Argent mérité !";
       statsTrophy.src = "./assets/images/silver-trophy.svg";
+      statsTrophy.alt = "icone-trophé-argent";
     } else {
-      statsSubTitle.innerText =
-        "Félicitation " + statsSubTitleUserName.innerText;
-      statsTitle.innerText = "Vous avez gagné !";
+      statsSubTitle.innerText = "Bravo! Maître du quiz, ";
+      statsTitle.innerText = "Or décroché !";
       statsTrophy.src = "./assets/images/gold-trophy.svg";
+      statsTrophy.alt = "icone-trophé-or";
     }
+
+    statsSubTitle.appendChild(statsSubTitleUserName);
 
     // Partie génération du score du joueur
 
@@ -412,7 +464,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const statsScore = document.createElement("p");
     statsScore.classList.add("font-bold", "text-4xl");
-    statsScore.innerText = score * 10;
+    statsScore.innerText = score * 100;
 
     const statsScoreText = document.createElement("p");
     statsScoreText.classList.add("text-lg");
@@ -442,7 +494,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const statsQuestionGoodRatio = document.createElement("p");
     statsQuestionGoodRatio.classList.add("font-bold", "text-lg");
-    statsQuestionGoodRatio.innerText = "3/5";
+    statsQuestionGoodRatio.innerText = `${score}/${questionsLength}`;
 
     const statsQuestionGoodRatioTxt = document.createElement("p");
     statsQuestionGoodRatioTxt.classList.add("font-bold", "text-lg");
@@ -470,7 +522,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const statsQuestionBadRatio = document.createElement("p");
     statsQuestionBadRatio.classList.add("font-bold", "text-lg");
-    statsQuestionBadRatio.innerText = "2/5";
+    statsQuestionBadRatio.innerText = `${
+      questionsLength - score
+    }/${questionsLength}`;
 
     const statsQuestionBadRatioTxt = document.createElement("p");
     statsQuestionBadRatioTxt.classList.add("font-bold", "text-lg");
@@ -501,9 +555,9 @@ document.addEventListener("DOMContentLoaded", () => {
       "w-full"
     );
     newGameBtn.innerText = "Nouvelle Partie";
-    newGameBtn.addEventListener("click", function() {
+    newGameBtn.addEventListener("click", function () {
       newGame(statsContainer);
-    })
+    });
 
     // On attache tout les élement au container stats
     statsContainer.appendChild(statsCustomSentence);
@@ -512,13 +566,44 @@ document.addEventListener("DOMContentLoaded", () => {
     statsContainer.appendChild(newGameBtn);
   }
 
-
   function gameUI() {
     const logo = document.createElement("img");
     logo.src = "assets/images/logo.png";
     logo.alt = "Logo";
     document.body.appendChild(logo);
     document.body.insertBefore(logo, document.body.firstChild);
+
+    // On génére le container qui va contenir l'input Prénom du joueur
+    userNameContainer = document.createElement("div");
+    userNameContainer.classList.add("my-8", "relative");
+    document.body.appendChild(userNameContainer);
+    logo.after(userNameContainer);
+
+    const userNameIcon = document.createElement("img");
+    userNameIcon.src = "assets/images/user-circle.svg";
+    userNameIcon.alt = "icone-utilisateur";
+    userNameIcon.classList.add("w-8", "absolute", "top-2.5", "left-2");
+
+    userNameInput = document.createElement("input");
+    userNameInput.setAttribute("type", "text");
+    userNameInput.setAttribute("placeholder", "Prénom");
+    userNameInput.classList.add(
+      "font-bold",
+      "text-lg",
+      "pl-10",
+      "pr-3",
+      "py-2",
+      "border-t-4",
+      "border-x-4",
+      "border-b-8",
+      "border-black",
+      "rounded-lg"
+    );
+
+    // On ajoute l'icone de l'input et l'input à son container
+    userNameContainer.appendChild(userNameIcon);
+    userNameContainer.appendChild(userNameInput);
+
     const svgPattern = document.createElement("img");
     svgPattern.classList.add(
       "absolute",
@@ -532,35 +617,35 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.appendChild(svgPattern);
   }
 
-
   //fonction pour le chronometre
-  function startTimer(){
-    timer = setInterval(() => { // Démarre une intervalle qui s'éxécute toutes les secondes
-        seconds++; // Incrémente le compteur de seconde
-        const minutes = Math.floor(seconds / 60); // Calcule les minute
-        const remainingSeconds = seconds % 60; // Calcule les secondes qui reste
-        if (minutes < 10 && remainingSeconds < 10) {
-            timerText.textContent = `0${minutes}:0${remainingSeconds}`;
-        }else if (minutes < 10){ 
-            timerText.textContent = `0${minutes}:${remainingSeconds}`;
-        }else if(remainingSeconds < 10) {
-            timerText.textContent = `${minutes}:0${remainingSeconds}`;
-        }else{
-            timerText.textContent = `${minutes}:${remainingSeconds}`;
-        }
+  function startTimer() {
+    timer = setInterval(() => {
+      // Démarre une intervalle qui s'éxécute toutes les secondes
+      seconds++; // Incrémente le compteur de seconde
+      const minutes = Math.floor(seconds / 60); // Calcule les minute
+      const remainingSeconds = seconds % 60; // Calcule les secondes qui reste
+      if (minutes < 10 && remainingSeconds < 10) {
+        timerText.textContent = `0${minutes}:0${remainingSeconds}`;
+      } else if (minutes < 10) {
+        timerText.textContent = `0${minutes}:${remainingSeconds}`;
+      } else if (remainingSeconds < 10) {
+        timerText.textContent = `${minutes}:0${remainingSeconds}`;
+      } else {
+        timerText.textContent = `${minutes}:${remainingSeconds}`;
+      }
     }, 1000);
-}
+  }
 
   function stopTimer() {
-  clearInterval(timer);
-  };
-
+    clearInterval(timer);
+  }
 
   function newGame(statsContainer) {
     timerText.innerHTML = "00:00";
     seconds = 0;
     timerBorder.style.display = "none";
     timerContainer.style.display = "none";
+    // musicBorder.style.display = "none";
     score = 0;
     selectionedAnswer = false;
     currentQuestionIndex = 0;
@@ -569,11 +654,14 @@ document.addEventListener("DOMContentLoaded", () => {
     userAnswers = [];
     board.innerHTML = ""; // Récupérer les réponses de l'utilisateur
     nextQuestionBtn.innerHTML = "Question suivante"; // à optimiser??
+    userNameContainer.style.display = "block";
+    userNameInput.value = "";
     startGameBtn.style.display = "block";
-  };
+  }
+
 
 
   gameUI();
-  console.log(selectionedAnswer)
+  console.log(selectionedAnswer);
   startGameBtn.addEventListener("click", startGame);
 });

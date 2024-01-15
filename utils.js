@@ -1,7 +1,13 @@
+let music;
+
 function startMusic(file) {
-  const music = new Audio();
+  music = new Audio();
   music.src = file;
   music.play();
 }
 
-export { startMusic };
+function stopMusic() {
+  music.pause();
+}
+export { startMusic, stopMusic };
+// export { stopMusic };

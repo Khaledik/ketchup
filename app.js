@@ -14,7 +14,37 @@ document.addEventListener("DOMContentLoaded", () => {
   let questionsLength; //rend la longueur du tableau des questions en global
   let selectionedAnswer = false; //le boolean qui permet d'avoir le popup quand aucune reponse n'est selectioné
 
-  const startGameBtn = document.getElementById("start-game");
+// création du bouton démarrer
+const startGameBtn = document.createElement("button");
+startGameBtn.id = ("start-game");
+let startGameBtnDiv = document.createElement("div");
+startGameBtnDiv.id = ("startGameBtnDiv");
+document.body.appendChild(startGameBtnDiv);
+startGameBtnDiv.appendChild(startGameBtn);
+startGameBtn.innerText = ("Démarrer le jeu");
+startGameBtnDiv.classList.add(
+  "bg-black/40",
+  "p-1.5",
+  "rounded-2xl"
+);
+startGameBtn.classList.add(
+  "bg-yellow-400",
+  "hover:bg-yellow-500",
+  "px-12",
+  "py-3",
+  "rounded-xl",
+  "font-medium",
+  "text-xl",
+  "shadow-inner",
+  "shadow-white",
+  "border-t-2",
+  "border-x-2",
+  "border-b-4",
+  "border-yellow-600",
+  "w-full"
+);
+
+
   const nextQuestionBtn = createButton("Question suivante", () => {
     if (currentQuestionIndex === 8) {
       nextQuestionBtn.innerHTML = "Valider Quiz"; // à optimiser????
@@ -144,8 +174,12 @@ musicBtn.addEventListener("click", function() {
   let currentQuestionIndex = 0;
 
   function startGame() {
+    const logo = document.getElementById("logo");
+    logo.classList.add(
+      "w-40",
+      "h-20",
+    );
     userName = userNameInput.value;
-    // arrayScoreBoardPlayers.push(userName);
 
     if (userName !== "") {
       musicAudio.play();
@@ -196,7 +230,7 @@ musicBtn.addEventListener("click", function() {
         }.jpg)`;
         ketchupImgs.classList.add(
           "w-80",
-          "h-48",
+          "h-40",
           "bg-cover",
           "bg-center",
           "rounded-lg",
@@ -224,7 +258,7 @@ musicBtn.addEventListener("click", function() {
             "border-black",
             "text-black",
             "text-lg",
-            "size-24",
+            "size-12",
             "rounded-lg",
             "w-full",
             "font-medium"
@@ -568,8 +602,12 @@ musicBtn.addEventListener("click", function() {
 
   function gameUI() {
     const logo = document.createElement("img");
+    logo.id ="logo";
     logo.src = "assets/images/logo.png";
     logo.alt = "Logo";
+    logo.classList.add(
+      // "size-"
+    )
     document.body.appendChild(logo);
     document.body.insertBefore(logo, document.body.firstChild);
 
@@ -623,7 +661,7 @@ musicBtn.addEventListener("click", function() {
       // Démarre une intervalle qui s'éxécute toutes les secondes
       seconds++; // Incrémente le compteur de seconde
       const minutes = Math.floor(seconds / 60); // Calcule les minute
-      const remainingSeconds = seconds % 60; // Calcule les secondes qui reste
+      const remainingSeconds = seconds % 60; // Calcule les secondes qui restent
       if (minutes < 10 && remainingSeconds < 10) {
         timerText.textContent = `0${minutes}:0${remainingSeconds}`;
       } else if (minutes < 10) {
@@ -645,7 +683,6 @@ musicBtn.addEventListener("click", function() {
     seconds = 0;
     timerBorder.style.display = "none";
     timerContainer.style.display = "none";
-    // musicBorder.style.display = "none";
     score = 0;
     selectionedAnswer = false;
     currentQuestionIndex = 0;
